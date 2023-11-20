@@ -58,6 +58,14 @@ defmodule ReactLvWeb do
     end
   end
 
+  defp view_helpers do
+    quote do
+      # ...
+      import PhoenixLiveReact
+      # ...
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent
