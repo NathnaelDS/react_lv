@@ -22,7 +22,7 @@ import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
 import { mount, update_mount } from "./mounter";
-import { GreeterProps } from "./greeter";
+import { MyReactAppProps } from "./MyReactApp";
 
 let Hooks = {};
 Hooks.Greeter = {
@@ -31,7 +31,7 @@ Hooks.Greeter = {
     this.mountRoot = root;
     this.unmountComponent = unmount;
 
-    this.handleEvent("react.update_count", ({ newCount: newCount }) => {
+    this.handleEvent("react.update_count", ({ new_count: newCount }) => {
       update_mount(this.mountRoot, this.opts(newCount));
     });
   },
@@ -46,14 +46,19 @@ Hooks.Greeter = {
   },
 
   updateCount(newCount) {
-    this.pushEventTo(this.el, "actions.countInc", { newCount: newCount });
+    this.pushEventTo(this.el, "actions.countInc", { new_count: newCount });
   },
 
-  opts(givenCount = 0): GreeterProps {
+  opts(givenCount = 0): MyReactAppProps {
     return {
-      name: "Shea",
+      name: "Fun",
       count: givenCount,
       updateCount: this.updateCount.bind(this),
+      pushEventTo: (event, payload) =>
+        this.pushEventTo(this.el, event, payload).bind(this),
+      // todo: Passing the function `this.pushEvent` is not working as expected
+      pushEvent: (payload) => this.pushEvent("actions.countInc", payload),
+      handleEvent: this.handleEvent.bind(this),
     };
   },
 };
